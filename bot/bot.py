@@ -4,7 +4,7 @@ from requests import get
 from glob import glob
 
 
-bot = telebot.TeleBot('7551432095:AAG1Lm_evaPSpoDeMQYtyJ222RCy4OgEmQA');
+bot = telebot.TeleBot('<Token>');
 @bot.message_handler(content_types=['text'])
 
 def get_text_messages(message):
