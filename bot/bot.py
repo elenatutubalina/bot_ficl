@@ -63,105 +63,94 @@ def languagegame(message):
     bot.send_message(message.from_user.id, '''Привет! В этой игре тебе нужно будет отгадать язык по одному предложению. После каждой неудачной попытки тебе будет предлагаться подсказка. Всего у тебя 3 попытки. 
 Начнём игру?''')
     bot.register_next_step_handler(message, main)
+#Основная функция: выводит фразу на языке, который нужно угадать
 def main(message):
-    if message.text.lower() == 'да' or message.text.lower() == 'конечно':
-        all_func = [start_english, start_espanol, start_chinese, start_french, start_japanese, start_korean, start_sanskrit, start_arabic, start_gypsy, start_georgian, start_armenian, start_german, start_polish, start_hebrew, start_hungarian, start_greek, start_finnish, start_russian, start_euskara, start_nahuatl]
-        get_random = random.choice(all_func)
-        return get_random(message)
+    global current_language, all_languages
+    all_languages = {'английский': ['Hello, guys!','Это язык германской группы', 'Это язык Шерлока Холмса'],
+                     'арабский': ['أحسنت', 'Это язык семитской группы, аравийской подгруппы', 'Это язык шейхов, цифр, магии и странной письменности'],
+                     'армянский': ['Ողջույն Լավ արեցիր։', 'Это язык индоевропейской семьи', 'Это язык гранатов и горы Арарат'],
+                     'баскский': ['Kaixo, denoi! Oso ondo!', 'Это изолят', 'На этом языке говорят на берегу Бискайского залива'],
+                     'венгерский': ['Helló! Gratulálok!', 'Это язык уральской семьи', 'Это язык Кальмана'],
+                     'греческий': ['Γειά σου! Μπράβο!', 'Это язык индоевропейской семьи', 'Это язык Пифагора'],
+                     'грузинский': ['გამარჯობა! კარგად გააკეთე!', 'Это язык картвельской семьи', 'Это язык хачапури и оджахури'],
+                     'иврит': ['שלום! כל הכבוד!', 'Это один из семитских языков', 'Это язык, на котором говорят в Израиле'],
+                     'испанский': ['Hola, amigos!', 'Это язык романской группы', 'Это язык Дон Кихота'],
+                     'китайский': ['你好！你很漂亮！', 'Это один из сино-тибетских языков', 'Это язык риса, драконов и братьев Лю'],
+                     'корейский': ['안녕하세요! 당신은 똑똑해요!', 'Это язык алтайской семьи', 'Это язык самых милых дорам'],
+                     'науатль': ['Piali! Kuali kichtol!', 'Это один из ацтекских языков', 'Это язык индейцев и древней культуры'],
+                     'немецкий': ['Hallo! Gut gemacht!', 'Это язык германской группы', 'Это язык сосисок, колбасок, пива, Баха и Гёте'],
+                     'польский': ['Cześć! Dobrze zrobiony!', 'Это язык славянской группы', 'Это язык пончиков, польки и Шопена'],
+                     'русский': ['Привет! Ты молодец!', 'Это язык славянской группы', 'Это язык медведей, матрёшек и балалайки'],
+                     'санскрит': ['सद् कृत!', 'Это древний язык индоевропейской семьи', 'Это язык древних сутр, Ситы и Рамы'],
+                     'финский': ['Hei! Hyvin tehty!', 'Это язык уральской семьи', 'Это язык мумми-троллей'],
+                     'французский': ['Bonjour, mis ami!', 'Это язык романской группы', 'Это язык мушкетёров, Жюля Верна и багетов'],
+                     'цыганский': ['Bachtalo amala!', 'Это язык индоарийской ветви индоевропейских языков', 'Это язык сумасшедших песен, плясок, жульничества и шарабана'],
+                     'японский': ['よくやった!', 'Это один из алтайских языков', 'Это язык аниме и самураев']}
+    all_languages_list = ['английский', 'арабский', 'армянский', 'баскский', 'венгерский','греческий',
+                          'грузинский', 'иврит', 'испанский', 'китайский', 'корейский', 'науатль','немецкий',
+                          'польский', 'русский', 'санскрит', 'финский', 'французский',  'цыганский', 'японский']
+    current_language = random.choice(all_languages_list)
+    if message.text.lower() == 'да' or message.text.lower() == 'конечно' or message.text.lower() == '/language':
+        bot.send_message(message.from_user.id,f"Какой это язык? {all_languages[current_language][0]}")
+        bot.register_next_step_handler(message, check1)
     else:
         bot.send_message(message.from_user.id, 'Хорошо! Хочешь поиграть во что-то другое? Напиши /games')
+#Функция продолжить игру
 def continue_game(message):
     if message.text.lower() == "да" or message.text.lower() == "конечно":
         bot.send_message(message.from_user.id, "Напиши /language")
         bot.register_next_step_handler(message, main)
     else:
         bot.send_message(message.from_user.id, 'Спасибо за игру! Пока!')
-
-# Испанский для игры
-def start_espanol(message):
-    bot.send_message(message.from_user.id,"Какой это язык? Hola, amigos!")
-    bot.register_next_step_handler(message, check1_espanol)
-def check1_espanol(message):
+#Первая попытка угадать язык
+def check1(message):
+    global current_language, all_languages
     answer = message.text.lower()
-    if answer == 'испанский':
+    if answer == current_language:
         bot.send_message(message.from_user.id, "Да! Молодец! Хочешь сыграть еще?")
         bot.register_next_step_handler(message, continue_game)
     else:
         bot.send_message(message.from_user.id, "Нет. Хочешь подсказку?")
-        bot.register_next_step_handler(message, hint1_espanol)
-def hint1_espanol(message):
+        bot.register_next_step_handler(message, hint1)
+#Первая подсказка
+def hint1(message):
+    global current_language, all_languages
     if message.text.lower() == "да":
-        bot.send_message(message.from_user.id, "Это язык романской группы")
-        bot.register_next_step_handler(message, check2_espanol)
+        bot.send_message(message.from_user.id, all_languages[current_language][1])
+        bot.register_next_step_handler(message, check2)
     else:
-        bot.send_message(message.from_user.id, 'Это испанский. Хочешь сыграть еще?')
+        bot.send_message(message.from_user.id, f'Это {current_language}. Хочешь сыграть еще?')
         bot.register_next_step_handler(message, continue_game)
-def check2_espanol(message):
+#Вторая попытка угадать язык
+def check2(message):
+    global current_language, all_languages
     answer = message.text.lower()
-    if answer == 'испанский':
+    if answer == current_language:
         bot.send_message(message.from_user.id, "Да! Молодец! Хочешь сыграть еще?")
         bot.register_next_step_handler(message, continue_game)
     else:
         bot.send_message(message.from_user.id, "Нет. Хочешь ещё подсказку?")
-        bot.register_next_step_handler(message, hint2_espanol)
-def hint2_espanol(message):
+        bot.register_next_step_handler(message, hint2)
+#Вторая подсказка
+def hint2(message):
+    global current_language, all_languages
     if message.text.lower() == "да":
-        bot.send_message(message.from_user.id, "Это язык Дон Кихота")
-        bot.register_next_step_handler(message, check3_espanol)
+        bot.send_message(message.from_user.id, all_languages[current_language][2])
+        bot.register_next_step_handler(message, check3)
     else:
-        bot.send_message(message.from_user.id, 'Это испанский. Хочешь сыграть еще?')
+        bot.send_message(message.from_user.id, f'Это {current_language}. Хочешь сыграть еще?')
         bot.register_next_step_handler(message, continue_game)
-def check3_espanol(message):
+#Третья попытка угадать язык
+def check3(message):
+    global current_language, all_languages
     answer = message.text.lower()
-    if answer == 'испанский':
+    if answer == current_language:
         bot.send_message(message.from_user.id, "Да! Молодец! Хочешь сыграть еще?")
         bot.register_next_step_handler(message, continue_game)
     else:
-        bot.send_message(message.from_user.id, 'Нет, это испанский. Хочешь сыграть еще?')
+        bot.send_message(message.from_user.id, f'Нет, это {current_language}. Хочешь сыграть еще?')
         bot.register_next_step_handler(message, continue_game)
 
-# Английский для игры
-def start_english(message):
-    bot.send_message(message.from_user.id,"Какой это язык? Hello, guys!")
-    bot.register_next_step_handler(message, check1_english)
-def check1_english(message):
-    answer = message.text.lower()
-    if answer == 'английский':
-        bot.send_message(message.from_user.id, "Да! Молодец! Хочешь сыграть еще?")
-        bot.register_next_step_handler(message, continue_game)
-    else:
-        bot.send_message(message.from_user.id, "Нет. Хочешь подсказку?")
-        bot.register_next_step_handler(message, hint1_english)
-def hint1_english(message):
-    if message.text.lower() == "да":
-        bot.send_message(message.from_user.id, "Это язык германской группы")
-        bot.register_next_step_handler(message, check2_english)
-    else:
-        bot.send_message(message.from_user.id, 'Это английский. Хочешь сыграть еще?')
-        bot.register_next_step_handler(message, continue_game)
-def check2_english(message):
-    answer = message.text.lower()
-    if answer == 'английский':
-        bot.send_message(message.from_user.id, "Да! Молодец! Хочешь сыграть еще?")
-        bot.register_next_step_handler(message, continue_game)
-    else:
-        bot.send_message(message.from_user.id, "Нет. Хочешь ещё подсказку?")
-        bot.register_next_step_handler(message, hint2_english)
-def hint2_english(message):
-    if message.text.lower() == "да":
-        bot.send_message(message.from_user.id, "Это язык Шерлока Холмса")
-        bot.register_next_step_handler(message, check3_english)
-    else:
-        bot.send_message(message.from_user.id, 'Это английский. Хочешь сыграть еще?')
-        bot.register_next_step_handler(message, continue_game)
-def check3_english(message):
-    answer = message.text.lower()
-    if answer == 'английский':
-        bot.send_message(message.from_user.id, "Да! Молодец! Хочешь сыграть еще?")
-        bot.register_next_step_handler(message, continue_game)
-    else:
-        bot.send_message(message.from_user.id, 'Нет, это английский. Хочешь сыграть еще?')
-        bot.register_next_step_handler(message, continue_game)
 
 
 # Виселица
