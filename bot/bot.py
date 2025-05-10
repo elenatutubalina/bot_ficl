@@ -1,7 +1,7 @@
 import telebot
 import random
 import os
-
+import time
 
 bot = telebot.TeleBot('<Token>');
 @bot.message_handler(content_types=['text'])
@@ -166,5 +166,13 @@ def check3_english(message):
 
 # Виселица
 
-
-bot.polling(none_stop=True, interval=0)
+# Функция, чтобы бот все время принимал сообщения без ошибки ReadTimeout. 
+# Когда бот не может подключиться, он печатает ошибку и продолжает пытаться подключиться спустя 5 секунд
+if __name__=='__main__':
+    while True:
+        try:
+            bot.polling(non_stop=True, interval=0)
+        except Exception as e:
+            print(e)
+            time.sleep(5)
+            continue
