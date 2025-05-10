@@ -14,4 +14,6 @@ https://habr.com/ru/articles/442800/ -- Основной функционал б
 
 https://stackoverflow.com/questions/68739567/socket-timeout-on-telegram-bot-polling -- Функция, чтобы бот все время принимал сообщения
 
+https://stackoverflow.com/questions/36778321/how-to-send-photo-on-telegram-bot -- Функция получения картинок
+
 https://help.sprinthost.ru/support/telegram-bot-and-hosting
