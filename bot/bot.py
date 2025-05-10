@@ -1,7 +1,6 @@
 import telebot
 import random
-from requests import get
-from glob import glob
+import os
 
 
 bot = telebot.TeleBot('<Token>');
@@ -23,11 +22,9 @@ def get_text_messages(message):
     elif message.text == '/hangman':
         bot.send_message(message.from_user.id, "В разработке")
     elif message.text == '/memes':
-        photos = glob('pictures1/*')
-        photo = random.choice(photos)
-        bot.send_photo(message.chat.id, photo = open(photo, 'rb'))
-
-
+        files = os.listdir('/home/a1123295/tgbot/pictures1/')
+        photopath = os.path.join('/home/a1123295/tgbot/pictures1/', random.choice(files))
+        bot.send_photo(message.chat.id, photo = open(photopath, 'rb'))
     elif message.text.lower() == 'дискретная математика' or message.text.lower() == 'дискра' or message.text.lower() == 'математика':
         math(message)
     else:
