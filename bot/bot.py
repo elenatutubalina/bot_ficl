@@ -6,21 +6,24 @@ import time
 bot = telebot.TeleBot('<Token>');
 @bot.message_handler(content_types=['text'])
 
+# Базовая функция получения сообщений и реакции на них. Из этой функции вызываются функции всех игр и информации о предметах
 def get_text_messages(message):
     if message.text.lower() == "привет":
         bot.send_message(message.from_user.id, "Привет, напиши /help")
-    elif message.text == "/help":
+    elif message.text == "/help" or message.text == "/start":
         bot.send_message(message.from_user.id, "Привет! Этот бот может присылать информацию о предметах на ФиКЛе, а также присылать мемы и играть в игры. Напиши '/info', '/games' или '/memes'")
     elif message.text == '/info':
         information(message)
     elif message.text == '/games':
         games(message)
     elif message.text == '/language':
-        bot.send_message(message.from_user.id, "Временно недоступно")
+        languagegame(message)
     elif message.text == '/age':
         bot.send_message(message.from_user.id, "В разработке")
     elif message.text == '/hangman':
         bot.send_message(message.from_user.id, "В разработке")
+    # Функция считывает названия всех файлов в папке pictures1 по указанному пути. Потом создается путь к самому фото, выбранному случайно
+    # После этого бот присылает выбранное фото 
     elif message.text == '/memes':
         files = os.listdir('/home/a1123295/tgbot/pictures1/')
         photopath = os.path.join('/home/a1123295/tgbot/pictures1/', random.choice(files))
