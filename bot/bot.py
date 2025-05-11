@@ -2,6 +2,7 @@ import telebot
 import random
 import os
 import time
+import datetime
 
 bot = telebot.TeleBot('<Token>');
 @bot.message_handler(content_types=['text'])
@@ -168,3 +169,65 @@ if __name__=='__main__':
             print(e)
             time.sleep(5)
             continue
+
+#Угадайка даты рождения
+
+#Словарь для красивого отображения месяцев
+MONTH_NAMES = {
+    1: "января", 2: "февраля", 3: "марта", 4: "апреля",
+    5: "мая", 6: "июня", 7: "июля", 8: "августа",
+    9: "сентября", 10: "октября", 11: "ноября", 12: "декабря"
+}
+
+#Функция, которая выбирает первую случайную дату
+def random_date(start, end):
+    return start + datetime.timedelta(
+        days=random.randint(0, (end - start).days)
+    )
+
+#Функция, которая красиво оформляет даты (из 01.01.2000 в 1 января 2020, например)
+def format_date_russian(date):
+    day = date.day
+    month = MONTH_NAMES[date.month]
+    year = date.year
+    return f"{day} {month} {year}"
+
+#Основная функция игры. Предлагает рандомную дату. Если это день рождения игрока, игра успешно заканчивается.
+#Если нет, то игрок пишет "раньше" или "позже", если он родился раньше или позже, и бот предлагает новую дату.
+#На успешное угадывание обычно требуется не больше 10-15 ходов, но если игроку надоест, из игры можно выйти.
+#Ту би континуед
+def age_guesser(message):
+    start_date = datetime.date(1950, 1, 1)
+    end_date = datetime.date(2020, 12, 31)
+    
+    print("О нет! Злой волшебник Кох запер вас в своем замке и не отпустит, пока не угадает вашу дату рождения!")
+    print("Правила игры: волшебник Кох покажет дату.")
+    print("Если вы родились позже этой даты, напишите «Позже».")
+    print("Если вы родились раньше, напишите «Раньше».")
+    print("Если волшебник Кох угадал, напишите «Да».")
+    print("Если игра вам наскучила, напишите «Выход».")
+
+    current_date = random_date(start_date, end_date)
+    print(f"Волшебник Кох воскликнул: {format_date_russian(current_date)}!")
+    
+    while True:
+        user_input = input("Вы родились в этот день?   ").strip().lower()
+        
+        if user_input.lower() == 'выход':
+            break
+            
+        if user_input.lower() == 'да':
+            print(f"Волшебник Кох угадал! Теперь вы свободны.")
+            break
+            
+        if user_input.lower() == 'раньше':
+            end_date = current_date
+            current_date = start_date + (current_date - start_date) // 2
+        elif user_input.lower() == 'позже':
+            start_date = current_date
+            current_date = current_date + (end_date - current_date) // 2
+        else:
+            print("Волшебник Кох чует неладное. Пожалуйста, введите что-то, что он понимает.")
+            continue
+            
+        print(f"Волшебник Кох воскликнул: {format_date_russian(current_date)}!")
