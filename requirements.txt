@@ -1,0 +1,6 @@
+Библиотеки: pyTelegramBotAPI 4.26.0 -- библиотека, которую нужно установить для модуля telebot
+Модули: 
+1) telebot version 0.0.5
+2) random
+3) os
+4) time
