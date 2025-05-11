@@ -157,6 +157,156 @@ def check3(message):
 
 
 # Виселица
+words = ['фонема', 'морфема', 'синтакс', 'клауза', 'лексема', 'спирант', 'сибилянт', 'звук', 'слог', 'мора', 'щелчок', 'префикс', 'суффикс', 'корень'] #слова, которые могут быть загаданы
+max_attempts = 8 
+#начало игры
+def hangstart_game(message):
+    global current_word, guessed_letters, attempts_left
+    current_word = random.choice(words)
+    guessed_letters = []
+    attempts_left = max_attempts
+    bot.send_message(message.from_user.id, f'''Привет! Это классическая виселица. Тебе будет загадано слово на лингвистическую тему, которое тебе нужно отгадывать, вводя каждый раз по одной букве. Все слова русские и написаны кириллицей. Всего у тебя 8 попыток.
+Начнем игру! Отгадываем слово из {len(current_word)} букв.''')
+    bot.register_next_step_handler(message, guess)
+#угадывание буквы
+def guess(message):
+    global guessed_letters, attempts_left
+    user_input = message.text.lower()
+    display_word = ''.join([char if char in guessed_letters else '_' for char in current_word])
+    if user_input == 'заново':
+        hangoncemore(message)
+    elif user_input == 'закончить':
+        endgame(message)
+    elif len(user_input) > 1:
+        bot.send_message(message.from_user.id,'Вводи только одну букву!')
+        bot.register_next_step_handler(message, guess)
+    elif user_input in guessed_letters:
+        bot.send_message(message.from_user.id,'Эту букву ты уже пробовал/а')
+        bot.send_message(message.from_user.id,f'''{display_word}
+Осталось попыток: {attempts_left}''')
+        bot.register_next_step_handler(message, guess)
+    elif user_input not in current_word:
+        attempts_left -= 1
+        bot.send_message(message.from_user.id, "Этой буквы нет в слове. Попробуй еще раз")
+        guessed_letters.append(user_input)
+        pictures(message)
+        if attempts_left == 0:
+            bot.send_message(message.from_user.id,f'''Попытки кончились:
+Правильный ответ: "{current_word}"''')
+            bot.send_message(message.from_user.id,'Чтобы продолжить играть или прекратить, напиши "заново" или "закончить"')
+            bot.register_next_step_handler(message, guess)
+        else:
+            bot.send_message(message.from_user.id,f'''{display_word}
+Осталось попыток: {attempts_left}''')
+            bot.register_next_step_handler(message, guess)
+    elif user_input in current_word:
+        bot.send_message(message.from_user.id,"Отлично, эта буква есть в слове")
+        guessed_letters.append(user_input)
+        display_word = ''.join([char if char in guessed_letters else '_' for char in current_word])
+        bot.send_message(message.from_user.id,f'''{display_word}
+Осталось попыток: {attempts_left}''')
+        bot.register_next_step_handler(message, guess)
+        if '_' not in display_word:
+            bot.send_message(message.from_user.id,f'Ура! Ты отгадал/а слово: {current_word}')
+            bot.send_message(message.from_user.id,'Чтобы продолжить играть или прекратить, напиши "заново" или "закончить"')
+#картинка виселицы
+def pictures(message):
+    global attempts_left
+    if attempts_left == 7:
+        bot.send_message(message.from_user.id, """
+     ______
+     |    
+     |
+     |
+     |
+     |
+     |
+    _|________
+    """)
+    elif attempts_left == 6:
+        bot.send_message(message.from_user.id, """
+     _______
+     |    |
+     |
+     |
+     |
+     |
+     |
+    _|_______
+    """ )
+    elif attempts_left == 5:
+        bot.send_message(message.from_user.id, """
+     ________
+     |    |
+     |    O
+     |    
+     | 
+     |   
+     |    
+    _|________
+    """)            
+    elif attempts_left == 4:
+        bot.send_message(message.from_user.id, """
+     ________
+     |    |
+     |    O
+     |    |
+     |   
+     |   
+     |   
+    _|_________
+    """  )
+    elif attempts_left == 3:
+        bot.send_message(message.from_user.id, """
+     _________
+     |    |
+     |    O
+     |    |\\
+     |   
+     |   
+     |     
+    _|__________
+    """ )
+    elif attempts_left == 2:
+        bot.send_message(message.from_user.id, """
+     ________
+     |    |
+     |    O
+     |   /|\\
+     |   
+     |   
+     |    
+    _|_________
+    """ )
+    elif attempts_left == 1:
+        bot.send_message(message.from_user.id, """
+     ________
+     |    |
+     |    O
+     |   /|\\
+     |   /
+     |   
+     |   
+    _|_________
+    """ )
+    elif attempts_left == 0:
+        bot.send_message(message.from_user.id, """
+     _________
+     |    |
+     |    O
+     |   /|\\
+     |   / \\
+     |
+     |   
+    _|__________
+    """ )
+                       
+
+#конец игры
+def endgame(message):
+    bot.send_message(message.from_user.id, 'Спасибо за игру!')
+def hangoncemore(message):
+    bot.send_message(message.from_user.id, 'Напиши /hangman')
 
 # Функция, чтобы бот все время принимал сообщения без ошибки ReadTimeout. 
 # Когда бот не может подключиться, он печатает ошибку и продолжает пытаться подключиться спустя 5 секунд
