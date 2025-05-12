@@ -309,16 +309,6 @@ def endgame(message):
 def hangoncemore(message):
     bot.send_message(message.from_user.id, 'Напиши /hangman')
 
-# Функция, чтобы бот все время принимал сообщения без ошибки ReadTimeout. 
-# Когда бот не может подключиться, он печатает ошибку и продолжает пытаться подключиться спустя 5 секунд
-if __name__=='__main__':
-    while True:
-        try:
-            bot.polling(non_stop=True, interval=0)
-        except Exception as e:
-            print(e)
-            time.sleep(5)
-            continue
 
 #Угадайка даты рождения
 
@@ -381,3 +371,15 @@ def age_guesser(message):
             continue
             
         print(f"Волшебник Кох воскликнул: {format_date_russian(current_date)}!")
+
+
+# Функция, чтобы бот все время принимал сообщения без ошибки ReadTimeout. 
+# Когда бот не может подключиться, он печатает ошибку и продолжает пытаться подключиться спустя 5 секунд
+if __name__=='__main__':
+    while True:
+        try:
+            bot.polling(non_stop=True, interval=0)
+        except Exception as e:
+            print(e)
+            time.sleep(5)
+            continue
