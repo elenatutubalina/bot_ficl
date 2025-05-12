@@ -110,7 +110,7 @@ def continue_game(message):
 def check1(message):
     global current_language, all_languages
     answer = message.text.lower()
-    if answer == current_language:
+    if answer == current_language or answer == f'{current_language} язык':
         bot.send_message(message.from_user.id, "Да! Молодец! Хочешь сыграть еще?")
         bot.register_next_step_handler(message, continue_game)
     else:
@@ -129,7 +129,7 @@ def hint1(message):
 def check2(message):
     global current_language, all_languages
     answer = message.text.lower()
-    if answer == current_language:
+    if answer == current_language or answer == f'{current_language} язык':
         bot.send_message(message.from_user.id, "Да! Молодец! Хочешь сыграть еще?")
         bot.register_next_step_handler(message, continue_game)
     else:
@@ -148,7 +148,7 @@ def hint2(message):
 def check3(message):
     global current_language, all_languages
     answer = message.text.lower()
-    if answer == current_language:
+    if answer == current_language or answer == f'{current_language} язык':
         bot.send_message(message.from_user.id, "Да! Молодец! Хочешь сыграть еще?")
         bot.register_next_step_handler(message, continue_game)
     else:
