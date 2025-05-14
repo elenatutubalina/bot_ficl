@@ -23,12 +23,17 @@ def get_text_messages(message):
         age_guesser(message)
     elif message.text == '/hangman':
         bot.send_message(message.from_user.id, "В разработке")
-    # Функция считывает названия всех файлов в папке pictures1 по указанному пути. Потом создается путь к самому фото, выбранному случайно
+    # Код считывает названия всех файлов в папке pictures1 по указанному пути. Потом создается путь к самому фото, выбранному случайно
     # После этого бот присылает выбранное фото 
     elif message.text == '/memes':
         files = os.listdir('/home/a1123295/tgbot/pictures1/')
         photopath = os.path.join('/home/a1123295/tgbot/pictures1/', random.choice(files))
         bot.send_photo(message.chat.id, photo = open(photopath, 'rb'))
+    # Аналогично с командой /memes, но картинки берутся из папки days и присылаются как стикеры
+    elif message.text.lower() == 'какой сегодня день?':
+        files = os.listdir('/home/a1123295/tgbot/days/')
+        stickerpath = os.path.join('/home/a1123295/tgbot/days/', random.choice(files))
+        bot.send_sticker(message.chat.id, sticker = open(stickerpath, 'rb'))
     elif message.text.lower() == 'дискретная математика' or message.text.lower() == 'дискра' or message.text.lower() == 'математика':
         math(message)
     else:
