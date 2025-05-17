@@ -17,3 +17,4 @@ https://habr.com/ru/articles/442800/ -- Код для основного фун�
 https://stackoverflow.com/questions/68739567/socket-timeout-on-telegram-bot-polling -- Функция, чтобы бот все время принимал сообщения
 
 https://stackoverflow.com/questions/36778321/how-to-send-photo-on-telegram-bot -- Функция получения картинок
+https://it-start.online/articles/pishem-igru-viselica-na-python-2 -- код откуда был взят внешний вид виселицы
