@@ -114,7 +114,7 @@ def information(message):
 
 def games(message):
     bot.send_message(message.from_user.id, "Отлично! В какую игру ты хочешь поиграть: виселица, угадай язык или угадайка возраста? Напиши '/hangman', '/language' или '/age'")
-
+    
 
 
 # Предметы
