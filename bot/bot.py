@@ -858,18 +858,8 @@ def age_guesser(message):
 
         if message.text.lower() == 'выход':
             break
+        
         bot.send_message(message.from_user.id, f"Волшебник Кох воскликнул: {format_date_russian(current_date)}!")
-        if user_input.lower() == 'раньше':
-            end_date = current_date
-            current_date = start_date + (current_date - start_date) // 2
-        elif user_input.lower() == 'позже':
-            start_date = current_date
-            current_date = current_date + (end_date - current_date) // 2
-        else:
-            print("Волшебник Кох чует неладное. Пожалуйста, введите что-то, что он понимает.")
-            continue
-            
-        print(f"Волшебник Кох воскликнул: {format_date_russian(current_date)}!")
 
 
         
