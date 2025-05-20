@@ -679,7 +679,7 @@ def guess(message):
             bot.send_message(message.from_user.id,f'''Попытки кончились:
 Правильный ответ: "{current_word}"''')
             bot.send_message(message.from_user.id,'Чтобы продолжить играть или прекратить, напиши "заново" или "закончить"')
-            bot.register_next_step_handler(message, guess)
+            bot.register_next_step_handler(message, ending)
         else:
             bot.send_message(message.from_user.id,f'''{display_word}
 Осталось попыток: {attempts_left}''')
@@ -690,10 +690,21 @@ def guess(message):
         display_word = ''.join([char if char in guessed_letters else '_' for char in current_word])
         bot.send_message(message.from_user.id,f'''{display_word}
 Осталось попыток: {attempts_left}''')
-        bot.register_next_step_handler(message, guess)
         if '_' not in display_word:
             bot.send_message(message.from_user.id,f'Ура! Ты отгадал/а слово: {current_word}')
             bot.send_message(message.from_user.id,'Чтобы продолжить играть или прекратить, напиши "заново" или "закончить"')
+            bot.register_next_step_handler(message, ending)
+        else:
+            bot.register_next_step_handler(message, guess)
+            
+def ending(message):
+    if message.text.lower() == 'заново':
+        hangoncemore(message)
+    elif message.text.lower() == 'закончить':
+        endgame(message)
+    else:
+        bot.send_message(message.from_user.id,'Игра закончена. Чтобы продолжить играть или прекратить, напиши "заново" или "закончить"')
+        bot.register_next_step_handler(message, ending)
 #картинка виселицы
 def pictures(message):
     global attempts_left
