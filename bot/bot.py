@@ -21,7 +21,7 @@ def get_text_messages(message):
     elif message.text == '/language':
         languagegame(message)
     elif message.text == '/age':
-        bot.send_message(message.from_user.id, "В разработке")
+        age_guesser(message)
     elif message.text == '/hangman':
         bot.send_message(message.from_user.id, "В разработке")
     # Функция считывает названия всех файлов в папке pictures1 по указанному пути. Потом создается путь к самому фото, выбранному случайно
