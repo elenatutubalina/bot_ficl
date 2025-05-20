@@ -13,7 +13,7 @@ def get_text_messages(message):
     if message.text.lower() == "привет":
         bot.send_message(message.from_user.id, "Привет, напиши /help")
     elif message.text == "/help" or message.text == "/start":
-        bot.send_message(message.from_user.id, "Привет! Этот бот может присылать информацию о предметах на ФиКЛе, а также присылать мемы и играть в игры. Напиши '/info', '/games' или '/memes'")
+        bot.send_message(message.from_user.id, "Привет! Этот бот может присылать информацию о предметах на ФиКЛе, а также присылать мемы и играть в игры. Напиши '/info', '/games', '/memes' или спроси, какой сегодня день")
     elif message.text == '/info':
         information(message)
     elif message.text == '/games':
@@ -31,7 +31,7 @@ def get_text_messages(message):
         photopath = os.path.join('/home/a1123295/tgbot/pictures1/', random.choice(files))
         bot.send_photo(message.chat.id, photo = open(photopath, 'rb'))
     # Аналогично с командой /memes, но картинки берутся из папки days и присылаются как стикеры
-    elif message.text.lower() == 'какой сегодня день?':
+    elif message.text.lower() == 'какой сегодня день?' or 'какой сегодня день':
         files = os.listdir('/home/a1123295/tgbot/days/')
         stickerpath = os.path.join('/home/a1123295/tgbot/days/', random.choice(files))
         bot.send_sticker(message.chat.id, sticker = open(stickerpath, 'rb'))
@@ -824,23 +824,25 @@ def format_date_russian(date):
 def callback_worker(call):
     if call.data == "yes":
         bot.send_message(call.message.chat.id, "Волшебник Кох угадал! Теперь вы свободны.")
-        break
     elif call.data == "before":
         end_date = current_date
         current_date = start_date + (current_date - start_date) // 2
+        return current_date
     elif call.data == "after":
         start_date = current_date
         current_date = current_date + (end_date - current_date) // 2
+        return current_date
 
+start_date = datetime.date(1950, 1, 1)
+end_date = datetime.date(2020, 12, 31)
+current_date = random_date(start_date, end_date)
 def age_guesser(message):
-    start_date = datetime.date(1950, 1, 1)
-    end_date = datetime.date(2020, 12, 31)
     
     bot.send_message(message.from_user.id, """О нет! Злой волшебник Кох запер вас в своем замке и не отпустит, пока не угадает вашу дату рождения!
     Правила игры: волшебник Кох покажет дату. Выберите подходящий ответ.
     Если игра вам наскучила, напишите «Выход».""")
 
-    current_date = random_date(start_date, end_date)
+
     bot.send_message(message.from_user.id, f"Волшебник Кох воскликнул: {format_date_russian(current_date)}!")
     
     while True:
