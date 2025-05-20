@@ -858,11 +858,10 @@ def age_guesser(message):
 
 # Функция, чтобы бот все время принимал сообщения без ошибки ReadTimeout. 
 # Когда бот не может подключиться, он печатает ошибку и продолжает пытаться подключиться спустя 5 секунд
-if __name__=='__main__':
-    while True:
-        try:
-            bot.polling(non_stop=True, interval=0)
-        except Exception as e:
-            print(e)
-            time.sleep(5)
-            continue
+while True:
+    try:
+        bot.polling(non_stop=True, interval=0)
+    except Exception as e:
+        print(e)
+        time.sleep(5)
+        continue
