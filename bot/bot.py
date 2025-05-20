@@ -3,6 +3,7 @@ import random
 import os
 import time
 import datetime
+from telebot import types
 
 bot = telebot.TeleBot('<Token>');
 @bot.message_handler(content_types=['text'])
@@ -196,38 +197,43 @@ def format_date_russian(date):
 #Если нет, то игрок пишет "раньше" или "позже", если он родился раньше или позже, и бот предлагает новую дату.
 #На успешное угадывание обычно требуется не больше 10-15 ходов, но если игроку надоест, из игры можно выйти.
 #Ту би континуед
+@bot.callback_query_handler(func=lambda call: True)
+def callback_worker(call):
+    if call.data == "yes":
+        bot.send_message(call.message.chat.id, "Волшебник Кох угадал! Теперь вы свободны.")
+        break
+    elif call.data == "before":
+        end_date = current_date
+        current_date = start_date + (current_date - start_date) // 2
+    elif call.data == "after":
+        start_date = current_date
+        current_date = current_date + (end_date - current_date) // 2
+
 def age_guesser(message):
     start_date = datetime.date(1950, 1, 1)
     end_date = datetime.date(2020, 12, 31)
     
-    print("О нет! Злой волшебник Кох запер вас в своем замке и не отпустит, пока не угадает вашу дату рождения!")
-    print("Правила игры: волшебник Кох покажет дату.")
-    print("Если вы родились позже этой даты, напишите «Позже».")
-    print("Если вы родились раньше, напишите «Раньше».")
-    print("Если волшебник Кох угадал, напишите «Да».")
-    print("Если игра вам наскучила, напишите «Выход».")
+    bot.send_message(message.from_user.id, """О нет! Злой волшебник Кох запер вас в своем замке и не отпустит, пока не угадает вашу дату рождения!
+    Правила игры: волшебник Кох покажет дату. Выберите подходящий ответ.
+    Если игра вам наскучила, напишите «Выход».""")
 
     current_date = random_date(start_date, end_date)
-    print(f"Волшебник Кох воскликнул: {format_date_russian(current_date)}!")
+    bot.send_message(message.from_user.id, f"Волшебник Кох воскликнул: {format_date_russian(current_date)}!")
     
     while True:
-        user_input = input("Вы родились в этот день?   ").strip().lower()
         
-        if user_input.lower() == 'выход':
+        keyboard = types.InlineKeyboardMarkup();
+        key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes');
+        keyboard.add(key_yes);
+        key_before= types.InlineKeyboardButton(text='Раньше', callback_data='before');
+        keyboard.add(key_before);
+        key_after= types.InlineKeyboardButton(text='Позже', callback_data='after');
+        keyboard.add(key_after);        
+
+        question = 'Вы родились в этот день?';
+        bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
+
+        if message.text.lower() == 'выход':
             break
             
-        if user_input.lower() == 'да':
-            print(f"Волшебник Кох угадал! Теперь вы свободны.")
-            break
-            
-        if user_input.lower() == 'раньше':
-            end_date = current_date
-            current_date = start_date + (current_date - start_date) // 2
-        elif user_input.lower() == 'позже':
-            start_date = current_date
-            current_date = current_date + (end_date - current_date) // 2
-        else:
-            print("Волшебник Кох чует неладное. Пожалуйста, введите что-то, что он понимает.")
-            continue
-            
-        print(f"Волшебник Кох воскликнул: {format_date_russian(current_date)}!")
+        bot.send_message(message.from_user.id, f"Волшебник Кох воскликнул: {format_date_russian(current_date)}!")
