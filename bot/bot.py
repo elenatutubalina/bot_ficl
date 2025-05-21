@@ -717,7 +717,7 @@ def languagegame(message):
     bot.register_next_step_handler(message, main)
 
 
-# Основная функция: выводит фразу на языке, который нужно угадать
+# Основная функция: выводит фразу на языке, который нужно угадать с помощью словаря.
 def main(message):
     global current_language, all_languages
     all_languages = {
@@ -862,7 +862,7 @@ def main(message):
         )
 
 
-# Функция продолжить игру
+# Функция продолжить игру. Если пользователь соглашается продолжить игру - вызывается функция main, если нет - с ним прощаются.
 def continue_game(message):
     if message.text.lower() == "да" or message.text.lower() == "конечно":
         bot.send_message(message.from_user.id, "Напиши /language")
@@ -871,7 +871,7 @@ def continue_game(message):
         bot.send_message(message.from_user.id, "Спасибо за игру! Пока!")
 
 
-# Первая попытка угадать язык
+# Первая попытка угадать язык. Пользователь вводит своё предположение. Если оно верное: его поздравляют, если нет - предлагают подсказку.
 def check1(message):
     global current_language, all_languages
     answer = message.text.lower()
@@ -885,7 +885,7 @@ def check1(message):
         bot.register_next_step_handler(message, hint1)
 
 
-# Первая подсказка
+# Первая подсказка. Если пользователь соглашается на подсказку - выводится лингвистическая подсказка. Если нет: выводится правильный ответ и предложение сыграть ещё.
 def hint1(message):
     global current_language, all_languages
     if message.text.lower() == "да":
@@ -899,7 +899,7 @@ def hint1(message):
         bot.register_next_step_handler(message, continue_game)
 
 
-# Вторая попытка угадать язык
+# Вторая попытка угадать язык. Пользователь снова вводит предположение.  Если оно верное: его поздравляют, если нет - предлагают ещё одну подсказку.
 def check2(message):
     global current_language, all_languages
     answer = message.text.lower()
@@ -913,7 +913,7 @@ def check2(message):
         bot.register_next_step_handler(message, hint2)
 
 
-# Вторая подсказка
+# Вторая подсказка. Если пользователь соглашается на вторую подсказку - выводится шутливая или культурологическая подсказка. Если нет: выводится правильный ответ и предложение сыграть ещё.
 def hint2(message):
     global current_language, all_languages
     if message.text.lower() == "да":
@@ -927,7 +927,7 @@ def hint2(message):
         bot.register_next_step_handler(message, continue_game)
 
 
-# Третья попытка угадать язык
+# Третья попытка угадать язык Пользователь вводит своё предположение. Если оно верное, его поздравляют и предлагают поиграть ещё. Если нет - выводится правильный ответ и пользователю предлагают сыграть ещё. 
 def check3(message):
     global current_language, all_languages
     answer = message.text.lower()
@@ -1002,7 +1002,7 @@ def guess(message):
     elif user_input not in current_word:
         attempts_left -= 1
         bot.send_message(
-            message.from_user.id, "Этой буквы нет в слове. Попробуй еще раз"
+            message.from_user.id, "Этой буквы нет в слове."
         )
         guessed_letters.append(user_input)
         pictures(message)
