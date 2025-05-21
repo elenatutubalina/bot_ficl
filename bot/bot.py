@@ -5,6 +5,7 @@ import time
 import datetime
 from telebot import types
 
+
 bot = telebot.TeleBot('<Token>');
 @bot.message_handler(content_types=['text'])
 
@@ -31,7 +32,7 @@ def get_text_messages(message):
         photopath = os.path.join('/home/a1123295/tgbot/pictures1/', random.choice(files))
         bot.send_photo(message.chat.id, photo = open(photopath, 'rb'))
     # Аналогично с командой /memes, но картинки берутся из папки days и присылаются как стикеры
-    elif message.text.lower() == 'какой сегодня день?' or 'какой сегодня день':
+    elif message.text.lower() == 'какой сегодня день?' or message.text.lower() == 'какой сегодня день':
         files = os.listdir('/home/a1123295/tgbot/days/')
         stickerpath = os.path.join('/home/a1123295/tgbot/days/', random.choice(files))
         bot.send_sticker(message.chat.id, sticker = open(stickerpath, 'rb'))
@@ -112,11 +113,9 @@ def information(message):
 Про какой из них ты хочешь узнать?''')
     
     
-
 def games(message):
     bot.send_message(message.from_user.id, "Отлично! В какую игру ты хочешь поиграть: виселица, угадай язык или угадайка возраста? Напиши '/hangman', '/language' или '/age'")
     
-
 
 # Предметы
 def math(message):
@@ -638,7 +637,6 @@ def check3(message):
     else:
         bot.send_message(message.from_user.id, f'Нет, это {current_language}. Хочешь сыграть еще?')
         bot.register_next_step_handler(message, continue_game)
-
 
 
 # Виселица
