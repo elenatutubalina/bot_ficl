@@ -191,7 +191,7 @@ def games(message):
     )
 
 
-# Предметы
+# Функции вывода информации о предметах
 def math(message):
     bot.send_message(
         message.from_user.id,
@@ -708,6 +708,9 @@ def cyber(message):
 
 
 # Языковая игра
+# словарь, в котором хранится, какой язык выпал пользователю. 
+# нужно, чтобы несколько людей могли играть одновременно
+current_language_dict = dict()
 def languagegame(message):
     bot.send_message(
         message.from_user.id,
@@ -978,9 +981,16 @@ words = [
     "конфикс"
 ]  # слова, которые могут быть загаданы
 max_attempts = 8
-
+# словари, в которых хранятся данные для каждого пользователя
+# нужны для одновременной игры нескольких пользователей
+guessed_letters_dict = dict()
+current_word_dict = dict()
+attempts_left_dict = dict()
 
 # начало игры
+# выбирается случайное слово из списка
+# словари попыток, слова, отгаданных букв обновляются для данного пользователя
+# после этого пользователь направлен в функцию guess
 def hangstart_game(message):
     global current_word_dict, guessed_letters_dict, attempts_left_dict
     current_word = random.choice(words)
@@ -1000,6 +1010,20 @@ def hangstart_game(message):
 
 
 # угадывание буквы
+# создается display_word, где если буква не в списке угаданных букв, то заменяется на '_'
+# если пользователь пишет заново/закончить, то отправляют в соответствующую функцию hangendgame/hangoncemore.
+# если пользователь пишет больше одной буквы, то просят вводить одну букву, но попытку не вычитают.
+# если пользователь вводит букву, которая уже была введена, то пишут, что она уже была угадана,
+# но попытку не вычитают.
+# если пользователь вводит одну букву не в слове, то она добавляется в список угаданных букв,
+# а также выводится количество оставшихс попыток, display_word и картинка из функции pictures.
+# в этой же ветке, если количество оставшихся попыток = 0, то выводят загаданно слово 
+# и отправляют в функцию окончания игры ending.
+# если пользователь вводит букву в слове, то она добавляется в список угаданных букв,
+# меняется display_word, выводится display_word, количество оставшихся попыток.
+# в этой же ветке, если в display_word нет '_', то пользователя поздравляют
+# и переводят в функцию ending
+# если игра не закончена, то каждая ветка направляет обратно в функцию guess
 def guess(message):
     global current_word_dict, guessed_letters_dict, attempts_left_dict
     user_id = message.from_user.id
@@ -1013,9 +1037,9 @@ def guess(message):
     if user_input == "заново":
         hangoncemore(message)
     elif user_input == "закончить":
-        endgame(message)
+        hangendgame(message)
     elif len(user_input) > 1:
-        bot.send_message(message.from_user.id, "Вводи только одну букву!")
+        bot.send_message(message.from_user.id, "Вводи только одну букву! Если хочешь закончить игру, напиши 'закончить'")
         bot.register_next_step_handler(message, guess)
     elif user_input in guessed_letters:
         bot.send_message(message.from_user.id, "Эту букву ты уже пробовал/а")
@@ -1026,11 +1050,12 @@ def guess(message):
         )
         bot.register_next_step_handler(message, guess)
     elif user_input not in current_word:
-        attempts_left -= 1
+        attempts_left_dict[user_id] -= 1
+        attempts_left = attempts_left_dict[user_id]
         bot.send_message(
-            message.from_user.id, "Этой буквы нет в слове."
+            message.from_user.id, "Этой буквы нет в слове. Попробуй еще раз"
         )
-        guessed_letters.append(user_input)
+        guessed_letters_dict[user_id].append(user_input)
         pictures(message)
         if attempts_left == 0:
             bot.send_message(
@@ -1054,7 +1079,7 @@ def guess(message):
         bot.send_message(
             message.from_user.id,
             "Отлично, эта буква есть в слове")
-        guessed_letters.append(user_input)
+        guessed_letters_dict[user_id].append(user_input)
         display_word = "".join(
             [char if char in guessed_letters else "_" for char in current_word]
         )
@@ -1075,12 +1100,13 @@ def guess(message):
         else:
             bot.register_next_step_handler(message, guess)
 
-#Если пользователь пишет "заново" - игра начинается сначала, если пишет "закончить" - игра заканчивается.
+# Если пользователь пишет "заново" - пользователя отправляют в функцию hangoncemore
+# если пишет "закончить" - отправляют в функцию hangendgame
 def ending(message):
     if message.text.lower() == "заново":
         hangoncemore(message)
     elif message.text.lower() == "закончить":
-        endgame(message)
+        hangendgame(message)
     else:
         bot.send_message(
             message.from_user.id,
@@ -1089,7 +1115,18 @@ def ending(message):
         bot.register_next_step_handler(message, ending)
 
 
-# картинка виселицы. Когда уменьшается количество, оставшихся попыток: виселица строится
+# пользователя благодарят за игру, снова доступны все команды
+def hangendgame(message):
+    bot.send_message(message.from_user.id, "Спасибо за игру!")
+
+# пользователя просят написать команду, чтобы снова играть
+def hangoncemore(message):
+    bot.send_message(message.from_user.id, "Напиши /hangman")
+
+
+# картинка виселицы
+# вызывается, когда пользователь неправильно угадывает букву
+# картинка зависит от количества оставшихся попыток у данного пользователя
 def pictures(message):
     global attempts_left_dict
     user_id = message.from_user.id
@@ -1208,13 +1245,6 @@ def pictures(message):
         )
 
 
-# конец игры
-def endgame(message):
-    bot.send_message(message.from_user.id, "Спасибо за игру!")
-
-
-def hangoncemore(message):
-    bot.send_message(message.from_user.id, "Напиши /hangman")
 
 
 # Угадайка даты рождения
@@ -1244,13 +1274,25 @@ def format_date_russian(date):
 #На успешное угадывание обычно требуется не больше 10-15 ходов, но если игроку надоест, из игры не обязательно выходить,
 #можно просто написать другую команду из функционала
 
+# начальная и конечная дата для игры
 start_date = datetime.date(1950, 1, 1)
 end_date = datetime.date(2020, 12, 31)
+# словари, в которых хранится информация о нужных датах для конкретного пользователя
+# нужны, чтобы несколько людей могли играть одновременно
 start_date_dict = dict()
 end_date_dict = dict()
 current_date_dict = dict()
 
-#это функция для работы клавиатуры
+# функция реакции на нажатия клавиатуры
+# если нажимается "да", то бот выводит поздравление
+# если нажимается "раньше", то бот ограничивает временной отрезок сверху current_date,
+# следующая current_date выбирается посередине нового временного отрезка.
+# если нажимается "позже", то все аналогично, но временной отрезок ограничивается снизу.
+# если пользователь выходит за рамки возможных дат, то бот посылает осуждающее сообщение.
+# если пользователь говорит, что родился позже n но раньше n+1 даты (или наоборот)
+# то бот выводит злое сообщение и посылает картинку из папки age_guesser
+# иначе бот снова предлагает дату и выводит клавиатуру
+
 @bot.callback_query_handler(func=lambda call: True)   
 def callback_worker(call):
     global current_date_dict, start_date_dict, end_date_dict, keyboard
@@ -1283,7 +1325,13 @@ def callback_worker(call):
             bot.send_message(call.message.chat.id, text=question, reply_markup=keyboard)
 
 
-#это основная функция игры
+# это основная функция игры
+# выбирается случайная дата current_date с 1 января 1950 до 31 декабря 2020. 
+# current_date, end_date, start_date добавляются в соответствующие словари: 
+# current_date_dict, end_date_dict и start_date_dict, ключ - id пользователя.
+# также создается глобальная клавиатура с кнопками "да", "раньше", "позже".
+# бот спрашивает родился ли пользователь в current_date, выводит
+# клавиатуру, после нажатия на кнопку пользователь автоматически переходит в функцию callback_worker
 def age_guesser(message):
     global current_date_dict, keyboard
     bot.send_message(message.from_user.id, """О нет! Злой волшебник Кох запер вас в своем замке и не отпустит, пока не угадает вашу дату рождения!
