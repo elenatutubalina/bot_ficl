@@ -708,19 +708,28 @@ def cyber(message):
 
 
 # Языковая игра
-# словарь, в котором хранится, какой язык выпал пользователю. 
+# словарь, в котором хранится, какой язык выпал пользователю.
 # нужно, чтобы несколько людей могли играть одновременно
 current_language_dict = dict()
+
+# пользователю посылается сообщение с правилами, после чего он переводится
+# в основную функцию main
+
+
 def languagegame(message):
     bot.send_message(
         message.from_user.id,
-        """Привет! В этой игре тебе нужно будет отгадать язык по одному предложению. После каждой неудачной попытки тебе будет предлагаться подсказка. Всего у тебя 3 попытки.
+        """Привет! В этой игре тебе нужно будет отгадать язык по одному предложению. 
+После каждой неудачной попытки тебе будет предлагаться подсказка. Всего у тебя 3 попытки.
 Начнём игру?""",
     )
     bot.register_next_step_handler(message, main)
 
 
-# Основная функция: выводит фразу на языке, который нужно угадать с помощью словаря.
+# В словаре all_languages для каждого языка ключ - название, значение - список из фразы и двух подсказок.
+# Основная функция: выбирается случайный язык, добавляется в словарь current_language_dict, ключ - id пользователя.
+# если пользователь соглашается начать игру, то выводится фраза на языке
+# сам пользователь переводится в функцию первой проверки check1
 def main(message):
     global current_language_dict, all_languages
     all_languages = {
@@ -867,7 +876,8 @@ def main(message):
         )
 
 
-# Функция продолжить игру. Если пользователь соглашается продолжить игру - вызывается функция main, если нет - с ним прощаются.
+# Функция продолжить игру. Если пользователь соглашается продолжить игру -
+# вызывается функция main, если нет - с ним прощаются.
 def continue_game(message):
     if message.text.lower() == "да" or message.text.lower() == "конечно":
         bot.send_message(message.from_user.id, "Напиши /language")
@@ -876,7 +886,8 @@ def continue_game(message):
         bot.send_message(message.from_user.id, "Спасибо за игру! Пока!")
 
 
-# Первая попытка угадать язык. Пользователь вводит своё предположение. Если оно верное: его поздравляют, если нет - предлагают подсказку.
+# Первая попытка угадать язык. Пользователь вводит своё предположение.
+# Если оно верное: его поздравляют, если нет - предлагают подсказку.
 def check1(message):
     global current_language_dict, all_languages
     user_id = message.from_user.id
@@ -892,7 +903,9 @@ def check1(message):
         bot.register_next_step_handler(message, hint1)
 
 
-# Первая подсказка. Если пользователь соглашается на подсказку - выводится лингвистическая подсказка. Если нет: выводится правильный ответ и предложение сыграть ещё.
+# Первая подсказка. Если пользователь соглашается на подсказку - выводится
+# лингвистическая подсказка. Если нет: выводится правильный ответ и
+# предложение сыграть ещё.
 def hint1(message):
     global current_language_dict, all_languages
     user_id = message.from_user.id
@@ -908,7 +921,9 @@ def hint1(message):
         bot.register_next_step_handler(message, continue_game)
 
 
-# Вторая попытка угадать язык. Пользователь снова вводит предположение.  Если оно верное: его поздравляют, если нет - предлагают ещё одну подсказку.
+# Вторая попытка угадать язык. Пользователь снова вводит предположение.
+# Если оно верное: его поздравляют, если нет - предлагают ещё одну
+# подсказку.
 def check2(message):
     global current_language_dict, all_languages
     user_id = message.from_user.id
@@ -924,7 +939,9 @@ def check2(message):
         bot.register_next_step_handler(message, hint2)
 
 
-# Вторая подсказка. Если пользователь соглашается на вторую подсказку - выводится шутливая или культурологическая подсказка. Если нет: выводится правильный ответ и предложение сыграть ещё.
+# Вторая подсказка. Если пользователь соглашается на вторую подсказку -
+# выводится шутливая или культурологическая подсказка. Если нет: выводится
+# правильный ответ и предложение сыграть ещё.
 def hint2(message):
     global current_language_dict, all_languages
     user_id = message.from_user.id
@@ -940,7 +957,9 @@ def hint2(message):
         bot.register_next_step_handler(message, continue_game)
 
 
-# Третья попытка угадать язык Пользователь вводит своё предположение. Если оно верное, его поздравляют и предлагают поиграть ещё. Если нет - выводится правильный ответ и пользователю предлагают сыграть ещё. 
+# Третья попытка угадать язык Пользователь вводит своё предположение. Если
+# оно верное, его поздравляют и предлагают поиграть ещё. Если нет -
+# выводится правильный ответ и пользователю предлагают сыграть ещё.
 def check3(message):
     global current_language_dict, all_languages
     user_id = message.from_user.id
@@ -987,6 +1006,7 @@ guessed_letters_dict = dict()
 current_word_dict = dict()
 attempts_left_dict = dict()
 
+
 # начало игры
 # выбирается случайное слово из списка
 # словари попыток, слова, отгаданных букв обновляются для данного пользователя
@@ -1002,7 +1022,9 @@ def hangstart_game(message):
     attempts_left_dict[user_id] = attempts_left
     bot.send_message(
         message.from_user.id,
-        f"""Привет! Это классическая виселица. Тебе будет загадано слово на лингвистическую тему, которое тебе нужно отгадывать, вводя каждый раз по одной букве. Все слова русские и написаны кириллицей. Всего у тебя 8 попыток.
+        f"""Привет! Это классическая виселица. 
+Тебе будет загадано слово на лингвистическую тему, которое тебе нужно отгадывать, вводя каждый раз по одной букве. 
+Все слова русские и написаны кириллицей. Всего у тебя 8 попыток.
 Начнем игру! Отгадываем слово из {
             len(current_word)} букв.""",
     )
@@ -1017,7 +1039,7 @@ def hangstart_game(message):
 # но попытку не вычитают.
 # если пользователь вводит одну букву не в слове, то она добавляется в список угаданных букв,
 # а также выводится количество оставшихс попыток, display_word и картинка из функции pictures.
-# в этой же ветке, если количество оставшихся попыток = 0, то выводят загаданно слово 
+# в этой же ветке, если количество оставшихся попыток = 0, то выводят загаданное слово
 # и отправляют в функцию окончания игры ending.
 # если пользователь вводит букву в слове, то она добавляется в список угаданных букв,
 # меняется display_word, выводится display_word, количество оставшихся попыток.
@@ -1039,7 +1061,9 @@ def guess(message):
     elif user_input == "закончить":
         hangendgame(message)
     elif len(user_input) > 1:
-        bot.send_message(message.from_user.id, "Вводи только одну букву! Если хочешь закончить игру, напиши 'закончить'")
+        bot.send_message(
+            message.from_user.id,
+            "Вводи только одну букву! Если хочешь закончить игру, напиши 'закончить'")
         bot.register_next_step_handler(message, guess)
     elif user_input in guessed_letters:
         bot.send_message(message.from_user.id, "Эту букву ты уже пробовал/а")
@@ -1100,6 +1124,7 @@ def guess(message):
         else:
             bot.register_next_step_handler(message, guess)
 
+
 # Если пользователь пишет "заново" - пользователя отправляют в функцию hangoncemore
 # если пишет "закончить" - отправляют в функцию hangendgame
 def ending(message):
@@ -1118,6 +1143,7 @@ def ending(message):
 # пользователя благодарят за игру, снова доступны все команды
 def hangendgame(message):
     bot.send_message(message.from_user.id, "Спасибо за игру!")
+
 
 # пользователя просят написать команду, чтобы снова играть
 def hangoncemore(message):
@@ -1245,34 +1271,35 @@ def pictures(message):
         )
 
 
-
-
 # Угадайка даты рождения
-
-#Словарь для красивого отображения месяцев
+# Словарь для красивого отображения месяцев
 MONTH_NAMES = {
     1: "января", 2: "февраля", 3: "марта", 4: "апреля",
     5: "мая", 6: "июня", 7: "июля", 8: "августа",
     9: "сентября", 10: "октября", 11: "ноября", 12: "декабря"
 }
 
-#Функция, которая выбирает первую случайную дату
+
+# Функция, которая выбирает первую случайную дату
 def random_date(start, end):
     return start + datetime.timedelta(
         days=random.randint(0, (end - start).days)
     )
 
-#Функция, которая красиво оформляет даты (из 01.01.2000 в 1 января 2020, например)
+
+# Функция, которая красиво оформляет даты (из 01.01.2000 в 1 января 2020,
+# например)
 def format_date_russian(date):
     day = date.day
     month = MONTH_NAMES[date.month]
     year = date.year
     return f"{day} {month} {year}"
 
-#Игра редлагает рандомную дату. Если это день рождения игрока, игра успешно заканчивается.
-#Если нет, то игрок выбирает кнопку "раньше" или "позже", если он родился раньше или позже, и бот предлагает новую дату.
-#На успешное угадывание обычно требуется не больше 10-15 ходов, но если игроку надоест, из игры не обязательно выходить,
-#можно просто написать другую команду из функционала
+# Игра редлагает рандомную дату. Если это день рождения игрока, игра успешно заканчивается.
+# Если нет, то игрок выбирает кнопку "раньше" или "позже", если он родился раньше или позже, и бот предлагает новую дату.
+# На успешное угадывание обычно требуется не больше 10-15 ходов, но если игроку надоест, из игры не обязательно выходить,
+# можно просто написать другую команду из функционала
+
 
 # начальная и конечная дата для игры
 start_date = datetime.date(1950, 1, 1)
@@ -1283,6 +1310,7 @@ start_date_dict = dict()
 end_date_dict = dict()
 current_date_dict = dict()
 
+
 # функция реакции на нажатия клавиатуры
 # если нажимается "да", то бот выводит поздравление
 # если нажимается "раньше", то бот ограничивает временной отрезок сверху current_date,
@@ -1292,71 +1320,112 @@ current_date_dict = dict()
 # если пользователь говорит, что родился позже n но раньше n+1 даты (или наоборот)
 # то бот выводит злое сообщение и посылает картинку из папки age_guesser
 # иначе бот снова предлагает дату и выводит клавиатуру
-
-@bot.callback_query_handler(func=lambda call: True)   
+@bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
     global current_date_dict, start_date_dict, end_date_dict, keyboard
     user_id = call.from_user.id
     if call.data == "yes":
-        bot.send_message(call.message.chat.id, "Волшебник Кох угадал! Теперь вы свободны.")
+        bot.send_message(call.message.chat.id,
+                         "Волшебник Кох угадал! Теперь вы свободны.")
     elif call.data == "before":
         end_date_dict[user_id] = current_date_dict[user_id]
-        current_date_dict[user_id] = start_date_dict[user_id] + (current_date_dict[user_id] - start_date_dict[user_id]) // 2
+        current_date_dict[user_id] = start_date_dict[user_id] + \
+            (current_date_dict[user_id] - start_date_dict[user_id]) // 2
         if current_date_dict[user_id] == datetime.date(1950, 1, 1):
-            bot.send_message(call.message.chat.id, "Волшебник Кох в ярости! Вы не можете быть таким старым.")
+            bot.send_message(
+                call.message.chat.id,
+                "Волшебник Кох в ярости! Вы не можете быть таким старым.")
         elif current_date_dict[user_id] == end_date_dict[user_id]:
-            bot.send_message(call.message.chat.id, "Волшебник Кох в ярости! Вы пытаетесь его обмануть! Он насылает на вас проклятье")
-            bot.send_photo(call.message.chat.id, photo=open("/home/a1123295/tgbot/age_guesser/photo_2025-05-22_12-52-08.jpg", "rb"))
+            bot.send_message(
+                call.message.chat.id,
+                "Волшебник Кох в ярости! Вы пытаетесь его обмануть! Он насылает на вас проклятье")
+            bot.send_photo(
+                call.message.chat.id,
+                photo=open(
+                    "/home/a1123295/tgbot/age_guesser/photo_2025-05-22_12-52-08.jpg",
+                    "rb"))
         else:
-            bot.send_message(call.message.chat.id, f"Волшебник Кох воскликнул: {format_date_russian(current_date_dict[user_id])}!") 
-            question = 'Вы родились в этот день?';
-            bot.send_message(call.message.chat.id, text=question, reply_markup=keyboard)
+            bot.send_message(
+                call.message.chat.id,
+                f"Волшебник Кох воскликнул: {
+                    format_date_russian(
+                        current_date_dict[user_id])}!")
+            question = 'Вы родились в этот день?'
+            bot.send_message(
+                call.message.chat.id,
+                text=question,
+                reply_markup=keyboard)
     elif call.data == "after":
         start_date_dict[user_id] = current_date_dict[user_id]
-        current_date_dict[user_id] = current_date_dict[user_id] + (end_date_dict[user_id] - current_date_dict[user_id]) // 2
+        current_date_dict[user_id] = current_date_dict[user_id] + \
+            (end_date_dict[user_id] - current_date_dict[user_id]) // 2
         if current_date_dict[user_id] == datetime.date(2020, 12, 30):
-            bot.send_message(call.message.chat.id, "Волшебник Кох в ярости! Вы не можете быть таким юным.")
+            bot.send_message(
+                call.message.chat.id,
+                "Волшебник Кох в ярости! Вы не можете быть таким юным.")
         elif current_date_dict[user_id] == start_date_dict[user_id]:
-            bot.send_message(call.message.chat.id, "Волшебник Кох в ярости! Вы пытаетесь его обмануть! Он насылает на вас проклятье")
-            bot.send_photo(call.message.chat.id, photo=open("/home/a1123295/tgbot/age_guesser/photo_2025-05-22_12-52-08.jpg", "rb"))
+            bot.send_message(
+                call.message.chat.id,
+                "Волшебник Кох в ярости! Вы пытаетесь его обмануть! Он насылает на вас проклятье")
+            bot.send_photo(
+                call.message.chat.id,
+                photo=open(
+                    "/home/a1123295/tgbot/age_guesser/photo_2025-05-22_12-52-08.jpg",
+                    "rb"))
         else:
-            bot.send_message(call.message.chat.id, f"Волшебник Кох воскликнул: {format_date_russian(current_date_dict[user_id])}!")
-            question = 'Вы родились в этот день?';
-            bot.send_message(call.message.chat.id, text=question, reply_markup=keyboard)
+            bot.send_message(
+                call.message.chat.id,
+                f"Волшебник Кох воскликнул: {
+                    format_date_russian(
+                        current_date_dict[user_id])}!")
+            question = 'Вы родились в этот день?'
+            bot.send_message(
+                call.message.chat.id,
+                text=question,
+                reply_markup=keyboard)
 
 
 # это основная функция игры
-# выбирается случайная дата current_date с 1 января 1950 до 31 декабря 2020. 
-# current_date, end_date, start_date добавляются в соответствующие словари: 
+# выбирается случайная дата current_date с 1 января 1950 до 31 декабря 2020.
+# current_date, end_date, start_date добавляются в соответствующие словари:
 # current_date_dict, end_date_dict и start_date_dict, ключ - id пользователя.
 # также создается глобальная клавиатура с кнопками "да", "раньше", "позже".
 # бот спрашивает родился ли пользователь в current_date, выводит
-# клавиатуру, после нажатия на кнопку пользователь автоматически переходит в функцию callback_worker
+# клавиатуру, после нажатия на кнопку пользователь автоматически переходит
+# в функцию callback_worker
 def age_guesser(message):
     global current_date_dict, keyboard
-    bot.send_message(message.from_user.id, """О нет! Злой волшебник Кох запер вас в своем замке и не отпустит, пока не угадает вашу дату рождения!
-Правила игры: волшебник Кох покажет дату. Выберите подходящий ответ.""")  
+    bot.send_message(
+        message.from_user.id,
+        """О нет! Злой волшебник Кох запер вас в своем замке и не отпустит, пока не угадает вашу дату рождения!
+Правила игры: волшебник Кох покажет дату. Выберите подходящий ответ.""")
 
     current_date = random_date(start_date, end_date)
     user_id = message.from_user.id
     end_date_dict[user_id] = end_date
     start_date_dict[user_id] = start_date
     current_date_dict[user_id] = current_date
-    bot.send_message(message.from_user.id, f"Волшебник Кох воскликнул: {format_date_russian(current_date)}!")
-    
-    keyboard = types.InlineKeyboardMarkup(); #создание клавиатуры и кнопок на ней
-    key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes');
-    keyboard.add(key_yes);
-    key_before= types.InlineKeyboardButton(text='Раньше', callback_data='before');
-    keyboard.add(key_before);
-    key_after= types.InlineKeyboardButton(text='Позже', callback_data='after');
-    keyboard.add(key_after);        
+    bot.send_message(
+        message.from_user.id,
+        f"Волшебник Кох воскликнул: {
+            format_date_russian(current_date)}!")
 
-    question = 'Вы родились в этот день?';
-    bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
+    keyboard = types.InlineKeyboardMarkup()  # создание клавиатуры и кнопок на ней
+    key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')
+    keyboard.add(key_yes)
+    key_before = types.InlineKeyboardButton(
+        text='Раньше', callback_data='before')
+    keyboard.add(key_before)
+    key_after = types.InlineKeyboardButton(text='Позже', callback_data='after')
+    keyboard.add(key_after)
+
+    question = 'Вы родились в этот день?'
+    bot.send_message(
+        message.from_user.id,
+        text=question,
+        reply_markup=keyboard)
 
 
-  
 # Функция, чтобы бот все время принимал сообщения без ошибки ReadTimeout.
 # Когда бот не может подключиться, он печатает ошибку и продолжает
 # пытаться подключиться спустя 5 секунд
