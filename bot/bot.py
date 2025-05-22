@@ -719,7 +719,7 @@ def languagegame(message):
 
 # Основная функция: выводит фразу на языке, который нужно угадать с помощью словаря.
 def main(message):
-    global current_language, all_languages
+    global current_language_dict, all_languages
     all_languages = {
         "английский": [
             "Hello, guys!",
@@ -845,6 +845,8 @@ def main(message):
         "японский",
     ]
     current_language = random.choice(all_languages_list)
+    user_id = message.from_user.id
+    current_language_dict[user_id] = current_language
     if (
         message.text.lower() == "да"
         or message.text.lower() == "конечно"
@@ -873,7 +875,9 @@ def continue_game(message):
 
 # Первая попытка угадать язык. Пользователь вводит своё предположение. Если оно верное: его поздравляют, если нет - предлагают подсказку.
 def check1(message):
-    global current_language, all_languages
+    global current_language_dict, all_languages
+    user_id = message.from_user.id
+    current_language = current_language_dict[user_id]
     answer = message.text.lower()
     if answer == current_language or answer == f"{current_language} язык":
         bot.send_message(
@@ -887,7 +891,9 @@ def check1(message):
 
 # Первая подсказка. Если пользователь соглашается на подсказку - выводится лингвистическая подсказка. Если нет: выводится правильный ответ и предложение сыграть ещё.
 def hint1(message):
-    global current_language, all_languages
+    global current_language_dict, all_languages
+    user_id = message.from_user.id
+    current_language = current_language_dict[user_id]
     if message.text.lower() == "да":
         bot.send_message(
             message.from_user.id,
@@ -901,7 +907,9 @@ def hint1(message):
 
 # Вторая попытка угадать язык. Пользователь снова вводит предположение.  Если оно верное: его поздравляют, если нет - предлагают ещё одну подсказку.
 def check2(message):
-    global current_language, all_languages
+    global current_language_dict, all_languages
+    user_id = message.from_user.id
+    current_language = current_language_dict[user_id]
     answer = message.text.lower()
     if answer == current_language or answer == f"{current_language} язык":
         bot.send_message(
@@ -915,7 +923,9 @@ def check2(message):
 
 # Вторая подсказка. Если пользователь соглашается на вторую подсказку - выводится шутливая или культурологическая подсказка. Если нет: выводится правильный ответ и предложение сыграть ещё.
 def hint2(message):
-    global current_language, all_languages
+    global current_language_dict, all_languages
+    user_id = message.from_user.id
+    current_language = current_language_dict[user_id]
     if message.text.lower() == "да":
         bot.send_message(
             message.from_user.id,
@@ -929,7 +939,9 @@ def hint2(message):
 
 # Третья попытка угадать язык Пользователь вводит своё предположение. Если оно верное, его поздравляют и предлагают поиграть ещё. Если нет - выводится правильный ответ и пользователю предлагают сыграть ещё. 
 def check3(message):
-    global current_language, all_languages
+    global current_language_dict, all_languages
+    user_id = message.from_user.id
+    current_language = current_language_dict[user_id]
     answer = message.text.lower()
     if answer == current_language or answer == f"{current_language} язык":
         bot.send_message(
@@ -958,16 +970,26 @@ words = [
     "префикс",
     "суффикс",
     "корень",
+    "глайд",
+    "увула",
+    "инфикс",
+    "постфикс",
+    "флексия",
+    "конфикс"
 ]  # слова, которые могут быть загаданы
 max_attempts = 8
 
 
 # начало игры
 def hangstart_game(message):
-    global current_word, guessed_letters, attempts_left
+    global current_word_dict, guessed_letters_dict, attempts_left_dict
     current_word = random.choice(words)
     guessed_letters = []
     attempts_left = max_attempts
+    user_id = message.from_user.id
+    current_word_dict[user_id] = current_word
+    guessed_letters_dict[user_id] = guessed_letters
+    attempts_left_dict[user_id] = attempts_left
     bot.send_message(
         message.from_user.id,
         f"""Привет! Это классическая виселица. Тебе будет загадано слово на лингвистическую тему, которое тебе нужно отгадывать, вводя каждый раз по одной букве. Все слова русские и написаны кириллицей. Всего у тебя 8 попыток.
@@ -979,7 +1001,11 @@ def hangstart_game(message):
 
 # угадывание буквы
 def guess(message):
-    global guessed_letters, attempts_left
+    global current_word_dict, guessed_letters_dict, attempts_left_dict
+    user_id = message.from_user.id
+    guessed_letters = guessed_letters_dict[user_id]
+    attempts_left = attempts_left_dict[user_id]
+    current_word = current_word_dict[user_id]
     user_input = message.text.lower()
     display_word = "".join(
         [char if char in guessed_letters else "_" for char in current_word]
@@ -1049,7 +1075,7 @@ def guess(message):
         else:
             bot.register_next_step_handler(message, guess)
 
-
+#Если пользователь пишет "заново" - игра начинается сначала, если пишет "закончить" - игра заканчивается.
 def ending(message):
     if message.text.lower() == "заново":
         hangoncemore(message)
@@ -1063,9 +1089,11 @@ def ending(message):
         bot.register_next_step_handler(message, ending)
 
 
-# картинка виселицы
+# картинка виселицы. Когда уменьшается количество, оставшихся попыток: виселица строится
 def pictures(message):
-    global attempts_left
+    global attempts_left_dict
+    user_id = message.from_user.id
+    attempts_left = attempts_left_dict[user_id]
     if attempts_left == 7:
         bot.send_message(
             message.from_user.id,
