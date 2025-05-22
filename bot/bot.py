@@ -1211,57 +1211,76 @@ def format_date_russian(date):
     year = date.year
     return f"{day} {month} {year}"
 
-#Основная функция игры. Предлагает рандомную дату. Если это день рождения игрока, игра успешно заканчивается.
-#Если нет, то игрок пишет "раньше" или "позже", если он родился раньше или позже, и бот предлагает новую дату.
-#На успешное угадывание обычно требуется не больше 10-15 ходов, но если игроку надоест, из игры можно выйти.
-#Ту би континуед
-@bot.callback_query_handler(func=lambda call: True)
-def callback_worker(call):
-    if call.data == "yes":
-        bot.send_message(call.message.chat.id, "Волшебник Кох угадал! Теперь вы свободны.")
-    elif call.data == "before":
-        end_date = current_date
-        current_date = start_date + (current_date - start_date) // 2
-        return current_date
-    elif call.data == "after":
-        start_date = current_date
-        current_date = current_date + (end_date - current_date) // 2
-        return current_date
+#Игра редлагает рандомную дату. Если это день рождения игрока, игра успешно заканчивается.
+#Если нет, то игрок выбирает кнопку "раньше" или "позже", если он родился раньше или позже, и бот предлагает новую дату.
+#На успешное угадывание обычно требуется не больше 10-15 ходов, но если игроку надоест, из игры не обязательно выходить,
+#можно просто написать другую команду из функционала
 
 start_date = datetime.date(1950, 1, 1)
 end_date = datetime.date(2020, 12, 31)
-current_date = random_date(start_date, end_date)
+start_date_dict = dict()
+end_date_dict = dict()
+current_date_dict = dict()
+
+#это функция для работы клавиатуры
+@bot.callback_query_handler(func=lambda call: True)   
+def callback_worker(call):
+    global current_date_dict, start_date_dict, end_date_dict, keyboard
+    user_id = call.from_user.id
+    if call.data == "yes":
+        bot.send_message(call.message.chat.id, "Волшебник Кох угадал! Теперь вы свободны.")
+    elif call.data == "before":
+        end_date_dict[user_id] = current_date_dict[user_id]
+        current_date_dict[user_id] = start_date_dict[user_id] + (current_date_dict[user_id] - start_date_dict[user_id]) // 2
+        if current_date_dict[user_id] == datetime.date(1950, 1, 1):
+            bot.send_message(call.message.chat.id, "Волшебник Кох в ярости! Вы не можете быть таким старым.")
+        elif current_date_dict[user_id] == end_date_dict[user_id]:
+            bot.send_message(call.message.chat.id, "Волшебник Кох в ярости! Вы пытаетесь его обмануть! Он насылает на вас проклятье")
+            bot.send_photo(call.message.chat.id, photo=open("/home/a1123295/tgbot/age_guesser/photo_2025-05-22_12-52-08.jpg", "rb"))
+        else:
+            bot.send_message(call.message.chat.id, f"Волшебник Кох воскликнул: {format_date_russian(current_date_dict[user_id])}!") 
+            question = 'Вы родились в этот день?';
+            bot.send_message(call.message.chat.id, text=question, reply_markup=keyboard)
+    elif call.data == "after":
+        start_date_dict[user_id] = current_date_dict[user_id]
+        current_date_dict[user_id] = current_date_dict[user_id] + (end_date_dict[user_id] - current_date_dict[user_id]) // 2
+        if current_date_dict[user_id] == datetime.date(2020, 12, 30):
+            bot.send_message(call.message.chat.id, "Волшебник Кох в ярости! Вы не можете быть таким юным.")
+        elif current_date_dict[user_id] == start_date_dict[user_id]:
+            bot.send_message(call.message.chat.id, "Волшебник Кох в ярости! Вы пытаетесь его обмануть! Он насылает на вас проклятье")
+            bot.send_photo(call.message.chat.id, photo=open("/home/a1123295/tgbot/age_guesser/photo_2025-05-22_12-52-08.jpg", "rb"))
+        else:
+            bot.send_message(call.message.chat.id, f"Волшебник Кох воскликнул: {format_date_russian(current_date_dict[user_id])}!")
+            question = 'Вы родились в этот день?';
+            bot.send_message(call.message.chat.id, text=question, reply_markup=keyboard)
+
+
+#это основная функция игры
 def age_guesser(message):
-    
+    global current_date_dict, keyboard
     bot.send_message(message.from_user.id, """О нет! Злой волшебник Кох запер вас в своем замке и не отпустит, пока не угадает вашу дату рождения!
-    Правила игры: волшебник Кох покажет дату. Выберите подходящий ответ.
-    Если игра вам наскучила, напишите «Выход».""")
+Правила игры: волшебник Кох покажет дату. Выберите подходящий ответ.""")  
 
-
+    current_date = random_date(start_date, end_date)
+    user_id = message.from_user.id
+    end_date_dict[user_id] = end_date
+    start_date_dict[user_id] = start_date
+    current_date_dict[user_id] = current_date
     bot.send_message(message.from_user.id, f"Волшебник Кох воскликнул: {format_date_russian(current_date)}!")
     
-    while True:
-        
-        keyboard = types.InlineKeyboardMarkup();
-        key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes');
-        keyboard.add(key_yes);
-        key_before= types.InlineKeyboardButton(text='Раньше', callback_data='before');
-        keyboard.add(key_before);
-        key_after= types.InlineKeyboardButton(text='Позже', callback_data='after');
-        keyboard.add(key_after);        
+    keyboard = types.InlineKeyboardMarkup(); #создание клавиатуры и кнопок на ней
+    key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes');
+    keyboard.add(key_yes);
+    key_before= types.InlineKeyboardButton(text='Раньше', callback_data='before');
+    keyboard.add(key_before);
+    key_after= types.InlineKeyboardButton(text='Позже', callback_data='after');
+    keyboard.add(key_after);        
 
-        question = 'Вы родились в этот день?';
-        bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
-
-        if message.text.lower() == 'выход':
-            break
-        
-        bot.send_message(message.from_user.id, f"Волшебник Кох воскликнул: {format_date_russian(current_date)}!")
+    question = 'Вы родились в этот день?';
+    bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
 
 
-        
-        
-        
+  
 # Функция, чтобы бот все время принимал сообщения без ошибки ReadTimeout.
 # Когда бот не может подключиться, он печатает ошибку и продолжает
 # пытаться подключиться спустя 5 секунд
