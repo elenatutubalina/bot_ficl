@@ -12,7 +12,7 @@ bot = telebot.TeleBot("<Token>")
 @bot.message_handler(content_types=["text"])
 # Базовая функция получения сообщений и реакции на них. Из этой функции
 # вызываются функции всех игр и информации о предметах
-def get_text_messages(message):
+def get_text_messages(message) -> None:
     if message.text.lower() == "привет":
         bot.send_message(message.from_user.id, "Привет, напиши /help")
     elif message.text == "/help" or message.text == "/start":
@@ -152,7 +152,7 @@ def get_text_messages(message):
         bot.send_message(message.from_user.id, "Не понимаю :(. Напиши /help.")
 
 
-def information(message):
+def information(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Конечно! Вот список предметов, про которые у меня есть информация:
@@ -184,7 +184,7 @@ def information(message):
     )
 
 
-def games(message):
+def games(message) -> None:
     bot.send_message(
         message.from_user.id,
         "Отлично! В какую игру ты хочешь поиграть: виселица, угадай язык или угадайка возраста? Напиши '/hangman', '/language' или '/age'",
@@ -192,7 +192,7 @@ def games(message):
 
 
 # Функции вывода информации о предметах
-def math(message):
+def math(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -216,7 +216,7 @@ def math(message):
     )
 
 
-def history(message):
+def history(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -239,7 +239,7 @@ def history(message):
     )
 
 
-def bzd(message):
+def bzd(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -253,7 +253,7 @@ def bzd(message):
     )
 
 
-def theory(message):
+def theory(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -297,7 +297,7 @@ def theory(message):
     )
 
 
-def acap(message):
+def acap(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -322,7 +322,7 @@ def acap(message):
     )
 
 
-def intro(message):
+def intro(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -342,7 +342,7 @@ def intro(message):
     )
 
 
-def arab(message):
+def arab(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -376,7 +376,7 @@ def arab(message):
     )
 
 
-def chin(message):
+def chin(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -409,7 +409,7 @@ def chin(message):
     )
 
 
-def span(message):
+def span(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -439,7 +439,7 @@ def span(message):
     )
 
 
-def germ(message):
+def germ(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -469,7 +469,7 @@ def germ(message):
     )
 
 
-def fren(message):
+def fren(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -491,7 +491,7 @@ def fren(message):
     )
 
 
-def ancient(message):
+def ancient(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -519,7 +519,7 @@ def ancient(message):
     )
 
 
-def philology(message):
+def philology(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -537,7 +537,7 @@ def philology(message):
     )
 
 
-def anthro(message):
+def anthro(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -553,7 +553,7 @@ def anthro(message):
     )
 
 
-def errors(message):
+def errors(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -570,7 +570,7 @@ def errors(message):
     )
 
 
-def problems(message):
+def problems(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -586,7 +586,7 @@ def problems(message):
     )
 
 
-def rzy(message):
+def rzy(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -609,7 +609,7 @@ def rzy(message):
     )
 
 
-def roman(message):
+def roman(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -625,7 +625,7 @@ def roman(message):
     )
 
 
-def empir(message):
+def empir(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -644,7 +644,7 @@ https://www.hse.ru/ba/ling/courses/916871988.html""",
     )
 
 
-def prog(message):
+def prog(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -674,7 +674,7 @@ def prog(message):
     )
 
 
-def social(message):
+def social(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -692,7 +692,7 @@ def social(message):
     )
 
 
-def cyber(message):
+def cyber(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Хорошо! Вот, что я могу сказать про этот предмет.
@@ -716,7 +716,7 @@ current_language_dict = dict()
 # в основную функцию main
 
 
-def languagegame(message):
+def languagegame(message) -> None:
     bot.send_message(
         message.from_user.id,
         """Привет! В этой игре тебе нужно будет отгадать язык по одному предложению. 
@@ -730,7 +730,7 @@ def languagegame(message):
 # Основная функция: выбирается случайный язык, добавляется в словарь current_language_dict, ключ - id пользователя.
 # если пользователь соглашается начать игру, то выводится фраза на языке
 # сам пользователь переводится в функцию первой проверки check1
-def main(message):
+def main(message) -> None:
     global current_language_dict, all_languages
     all_languages = {
         "английский": [
@@ -878,7 +878,7 @@ def main(message):
 
 # Функция продолжить игру. Если пользователь соглашается продолжить игру -
 # вызывается функция main, если нет - с ним прощаются.
-def continue_game(message):
+def continue_game(message) -> None:
     if message.text.lower() == "да" or message.text.lower() == "конечно":
         bot.send_message(message.from_user.id, "Напиши /language")
         bot.register_next_step_handler(message, main)
@@ -888,7 +888,7 @@ def continue_game(message):
 
 # Первая попытка угадать язык. Пользователь вводит своё предположение.
 # Если оно верное: его поздравляют, если нет - предлагают подсказку.
-def check1(message):
+def check1(message) -> None:
     global current_language_dict, all_languages
     user_id = message.from_user.id
     current_language = current_language_dict[user_id]
@@ -906,7 +906,7 @@ def check1(message):
 # Первая подсказка. Если пользователь соглашается на подсказку - выводится
 # лингвистическая подсказка. Если нет: выводится правильный ответ и
 # предложение сыграть ещё.
-def hint1(message):
+def hint1(message) -> None:
     global current_language_dict, all_languages
     user_id = message.from_user.id
     current_language = current_language_dict[user_id]
@@ -924,7 +924,7 @@ def hint1(message):
 # Вторая попытка угадать язык. Пользователь снова вводит предположение.
 # Если оно верное: его поздравляют, если нет - предлагают ещё одну
 # подсказку.
-def check2(message):
+def check2(message) -> None:
     global current_language_dict, all_languages
     user_id = message.from_user.id
     current_language = current_language_dict[user_id]
@@ -942,7 +942,7 @@ def check2(message):
 # Вторая подсказка. Если пользователь соглашается на вторую подсказку -
 # выводится шутливая или культурологическая подсказка. Если нет: выводится
 # правильный ответ и предложение сыграть ещё.
-def hint2(message):
+def hint2(message) -> None:
     global current_language_dict, all_languages
     user_id = message.from_user.id
     current_language = current_language_dict[user_id]
@@ -960,7 +960,7 @@ def hint2(message):
 # Третья попытка угадать язык Пользователь вводит своё предположение. Если
 # оно верное, его поздравляют и предлагают поиграть ещё. Если нет -
 # выводится правильный ответ и пользователю предлагают сыграть ещё.
-def check3(message):
+def check3(message) -> None:
     global current_language_dict, all_languages
     user_id = message.from_user.id
     current_language = current_language_dict[user_id]
@@ -1011,7 +1011,7 @@ attempts_left_dict = dict()
 # выбирается случайное слово из списка
 # словари попыток, слова, отгаданных букв обновляются для данного пользователя
 # после этого пользователь направлен в функцию guess
-def hangstart_game(message):
+def hangstart_game(message) -> None:
     global current_word_dict, guessed_letters_dict, attempts_left_dict
     current_word = random.choice(words)
     guessed_letters = []
@@ -1046,7 +1046,7 @@ def hangstart_game(message):
 # в этой же ветке, если в display_word нет '_', то пользователя поздравляют
 # и переводят в функцию ending
 # если игра не закончена, то каждая ветка направляет обратно в функцию guess
-def guess(message):
+def guess(message) -> None:
     global current_word_dict, guessed_letters_dict, attempts_left_dict
     user_id = message.from_user.id
     guessed_letters = guessed_letters_dict[user_id]
@@ -1127,7 +1127,7 @@ def guess(message):
 
 # Если пользователь пишет "заново" - пользователя отправляют в функцию hangoncemore
 # если пишет "закончить" - отправляют в функцию hangendgame
-def ending(message):
+def ending(message) -> None:
     if message.text.lower() == "заново":
         hangoncemore(message)
     elif message.text.lower() == "закончить":
@@ -1141,19 +1141,19 @@ def ending(message):
 
 
 # пользователя благодарят за игру, снова доступны все команды
-def hangendgame(message):
+def hangendgame(message) -> None:
     bot.send_message(message.from_user.id, "Спасибо за игру!")
 
 
 # пользователя просят написать команду, чтобы снова играть
-def hangoncemore(message):
+def hangoncemore(message) -> None:
     bot.send_message(message.from_user.id, "Напиши /hangman")
 
 
 # картинка виселицы
 # вызывается, когда пользователь неправильно угадывает букву
 # картинка зависит от количества оставшихся попыток у данного пользователя
-def pictures(message):
+def pictures(message) -> None:
     global attempts_left_dict
     user_id = message.from_user.id
     attempts_left = attempts_left_dict[user_id]
@@ -1281,7 +1281,7 @@ MONTH_NAMES = {
 
 
 # Функция, которая выбирает первую случайную дату
-def random_date(start, end):
+def random_date(start, end) -> None:
     return start + datetime.timedelta(
         days=random.randint(0, (end - start).days)
     )
@@ -1289,7 +1289,7 @@ def random_date(start, end):
 
 # Функция, которая красиво оформляет даты (из 01.01.2000 в 1 января 2020,
 # например)
-def format_date_russian(date):
+def format_date_russian(date) -> None:
     day = date.day
     month = MONTH_NAMES[date.month]
     year = date.year
@@ -1321,7 +1321,7 @@ current_date_dict = dict()
 # то бот выводит злое сообщение и посылает картинку из папки age_guesser
 # иначе бот снова предлагает дату и выводит клавиатуру
 @bot.callback_query_handler(func=lambda call: True)
-def callback_worker(call):
+def callback_worker(call) -> None:
     global current_date_dict, start_date_dict, end_date_dict, keyboard
     user_id = call.from_user.id
     if call.data == "yes":
@@ -1393,7 +1393,7 @@ def callback_worker(call):
 # бот спрашивает родился ли пользователь в current_date, выводит
 # клавиатуру, после нажатия на кнопку пользователь автоматически переходит
 # в функцию callback_worker
-def age_guesser(message):
+def age_guesser(message) -> None:
     global current_date_dict, keyboard
     bot.send_message(
         message.from_user.id,
