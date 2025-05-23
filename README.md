@@ -15,7 +15,7 @@
 
 Ресурсы, откуда был взят код:
 
-https://habr.com/ru/articles/442800/ -- Код для основного функционала бота
+https://habr.com/ru/articles/442800/ -- Код для основного функционала бота и кнопок в игре age_guesser
 
 https://stackoverflow.com/questions/68739567/socket-timeout-on-telegram-bot-polling -- Функция, чтобы бот все время принимал сообщения
 
